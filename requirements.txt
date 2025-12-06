@@ -1,6 +1,11 @@
-python-dotenv
-gspread
-google-auth
-google-auth-oauthlib
-google-auth-httplib2
+# Apify SDK for Actor runtime
+apify>=1.7.0
+
+# x.ai SDK for GROK API access
 xai_sdk
+
+# HTTP client for fetching input files
+httpx>=0.25.0
+
+# Environment variables (optional, for local development)
+python-dotenv

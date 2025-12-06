@@ -1,65 +1,106 @@
-# GROK Wallet Search
+# GROK Wallet Doxxer - Apify Actor
 
-Automated wallet address search on Twitter/X using x.ai's GROK API with x_search tool. Searches for wallet addresses and extracts associated Twitter usernames with confidence scores.
+Search Twitter/X for wallet addresses using xAI's GROK with the `x_search` tool. Identifies wallet owners with confidence scores by analyzing posts containing wallet addresses.
 
-## Features
+> **Built for the [Apify $1M Challenge Hackathon](https://apify.notion.site/apify-1m-challenge-hackathon)**
 
-- 🔍 **Two-Agent Workflow**: First checks if posts exist, then analyzes ownership
-- ⚡ **Parallel Processing**: Process multiple wallets concurrently (5x faster)
-- 📊 **Multi-Worksheet Support**: Process "Gigabud Holders" and "Grass Claims" worksheets
-- 🛡️ **Smart Rate Limiting**: Exponential backoff and request tracking
-- 💾 **Checkpoint System**: Resume from interruptions
-- 📈 **Google Sheets Integration**: Direct updates to your spreadsheet
+## What It Does
 
-## Quick Start
+This Actor takes a list of cryptocurrency wallet addresses and:
 
-1. **Install dependencies:**
-   ```bash
-   pip install -r requirements.txt
-   ```
+1. **Searches Twitter/X** for posts containing each wallet address
+2. **Analyzes ownership** context to identify who posted it
+3. **Assigns confidence scores** (High, Medium, Low, None) based on posting context
+4. **Outputs results** to Apify Dataset (exportable as CSV/JSON)
 
-2. **Configure environment:**
-   ```bash
-   cp .env.example .env
-   # Edit .env with your API keys and credentials
-   ```
+## Why Use This?
 
-3. **Run the script:**
-   ```bash
-   python3 grok_wallet_search.py
-   ```
+Traditional X API access with `search_all` costs ~$5k/month. This Actor leverages xAI's GROK API with the `x_search` tool to programmatically search X at a fraction of the cost.
 
-## Configuration
+**Use cases:**
+- Enrich wallet address lists with Twitter handles
+- Identify wallet owners for airdrops, allowlists, or research
+- Build wallet-to-social mappings for Web3 projects
 
-See `.env.example` for all available configuration options.
+## Input
 
-### Key Environment Variables
+Just provide your wallet addresses - no API keys needed!
 
-- `xai_key` - Your x.ai API key (required)
-- `GOOGLE_CREDENTIALS_FILE` - Path to Google Sheets credentials JSON (required)
-- `GOOGLE_SHEET_ID` - Your Google Sheet ID (required)
-- `WORKSHEETS_TO_PROCESS` - Comma-separated worksheet names (optional)
-- `MAX_CONCURRENT_REQUESTS` - Parallel processing limit (default: 5)
+| Field | Type | Description |
+|-------|------|-------------|
+| `walletAddresses` | array | JSON array of wallet addresses |
+| `walletText` | string | Paste CSV or text directly (one wallet per line) |
+| `inputFile` | string | URL to a hosted CSV/JSON/text file |
+
+### Input Examples
+
+**Paste CSV directly:**
+```
+wallet_address
+0x742d35Cc6634C0532925a3b844Bc9e7595f2bD12
+0x8ba1f109551bD432803012645Ac136ddd64DBA72
+```
+
+**Or one wallet per line:**
+```
+0x742d35Cc6634C0532925a3b844Bc9e7595f2bD12
+0x8ba1f109551bD432803012645Ac136ddd64DBA72
+```
+
+**JSON array:**
+```json
+{
+  "walletAddresses": [
+    "0x742d35Cc6634C0532925a3b844Bc9e7595f2bD12",
+    "0x8ba1f109551bD432803012645Ac136ddd64DBA72"
+  ]
+}
+```
+
+**File URL:**
+```json
+{
+  "inputFile": "https://example.com/wallets.csv"
+}
+```
+
+CSV files should have a `wallet_address` column (or the first column will be used).
 
 ## Output
 
-The script updates Google Sheets with:
-- **Post Exist?** (Column 5): `"true"` or `"false"`
-- **Twitter Handle** (Column 3): `@username` or empty
-- **Confidence Score** (Column 6): `"High"`, `"Medium"`, `"Low"`, or `"None"`
-- **Script Run** (Column 8): `"true"` when processed
+Results are saved to the default Apify Dataset. Each record contains:
+
+```json
+{
+  "wallet": "0x742d35Cc6634C0532925a3b844Bc9e7595f2bD12",
+  "postExists": true,
+  "twitterHandle": "@cryptouser123",
+  "confidence": "High"
+}
+```
+
+### Confidence Levels
+
+| Level | Meaning |
+|-------|---------|
+| **High** | Clear ownership - user posted wallet in airdrop thread, bio, or explicit ownership statement |
+| **Medium** | Strong indication - wallet shared for donations, trading, or user activity context |
+| **Low** | Weak indication - wallet just mentioned or quoted with minimal context |
+| **None** | No ownership indication found |
 
 ## Performance
 
-- **Sequential**: ~9 seconds per wallet (~3.5 days for 33k wallets)
-- **Parallel (5x)**: ~1.8 seconds per wallet (~16.5 hours for 33k wallets)
-- **5x speedup** with parallel processing enabled
+- **~1.8 seconds per wallet** with parallel processing
+- **Batch processing** for efficient rate limit management
+- **Automatic retries** with exponential backoff on rate limits
 
-## Deployment
+## Supported Wallet Formats
 
-See [RAILWAY_SETUP.md](./RAILWAY_SETUP.md) for Railway deployment instructions.
+- Ethereum (0x...)
+- Solana (base58)
+- Bitcoin (1.../3.../bc1...)
+- Other alphanumeric addresses (20-100 chars)
 
 ## License
 
 MIT
-
