@@ -31,6 +31,9 @@ Just provide your wallet addresses - no API keys needed!
 | `walletAddresses` | array | JSON array of wallet addresses |
 | `walletText` | string | Paste CSV or text directly (one wallet per line) |
 | `inputFile` | string | URL to a hosted CSV/JSON/text file |
+| `batchLimit` | integer | Max wallets per run (for large datasets, e.g., 5000) |
+| `resumeFromCheckpoint` | boolean | Continue from where last run stopped (default: true) |
+| `clearCheckpoint` | boolean | Start fresh, ignore previous progress |
 
 ### Input Examples
 
@@ -64,7 +67,29 @@ wallet_address
 }
 ```
 
-CSV files should have a `wallet_address` column (or the first column will be used).
+## Production Features
+
+### Checkpoint & Resume
+- Progress is saved automatically every 10 wallets
+- If the Actor times out or errors, just run again - it picks up where it left off
+- Checkpoint is validated against input hash to prevent data mismatch
+
+### Batch Processing
+For large datasets (10k+ wallets), use `batchLimit`:
+```json
+{
+  "inputFile": "https://example.com/33k-wallets.csv",
+  "batchLimit": 5000
+}
+```
+Run the Actor multiple times - each run processes 5000 wallets and saves progress.
+
+### Processing 33k Wallets
+| Strategy | Runs Needed | Time per Run |
+|----------|-------------|--------------|
+| `batchLimit: 5000` | 7 runs | ~2.5 hours each |
+| `batchLimit: 10000` | 4 runs | ~5 hours each |
+| No limit | 1 run | ~16 hours |
 
 ## Output
 
@@ -90,9 +115,10 @@ Results are saved to the default Apify Dataset. Each record contains:
 
 ## Performance
 
-- **~1.8 seconds per wallet** with parallel processing
+- **~1.8 seconds per wallet** with parallel processing (5 concurrent)
 - **Batch processing** for efficient rate limit management
 - **Automatic retries** with exponential backoff on rate limits
+- **Checkpoint every 10 wallets** for reliable resume
 
 ## Supported Wallet Formats
 
