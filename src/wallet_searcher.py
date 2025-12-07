@@ -8,12 +8,12 @@ import asyncio
 import time
 import logging
 from collections import deque
-from typing import Optional, Callable, Awaitable, Union
+from typing import Any, Optional, Callable, Awaitable, Union
 from dataclasses import dataclass
 
 # Type alias for async or sync callbacks
-AsyncCallback = Callable[[any], Awaitable[None]]
-SyncCallback = Callable[[any], None]
+AsyncCallback = Callable[[Any], Awaitable[None]]
+SyncCallback = Callable[[Any], None]
 ResultCallback = Optional[Union[AsyncCallback, SyncCallback]]
 
 from xai_sdk import Client
@@ -178,7 +178,7 @@ class GrokWalletSearcher:
             try:
                 if hasattr(error, 'code') and error.code() == grpc.StatusCode.RESOURCE_EXHAUSTED:
                     return True
-            except:
+            except (AttributeError, TypeError):
                 pass
         
         # String-based detection
