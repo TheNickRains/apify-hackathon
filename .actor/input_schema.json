@@ -1,0 +1,51 @@
+{
+    "title": "Wallet Doxxer Input",
+    "description": "Search Twitter/X for wallet addresses and find their owners",
+    "type": "object",
+    "schemaVersion": 1,
+    "properties": {
+        "walletText": {
+            "title": "Wallet addresses",
+            "type": "string",
+            "description": "Paste wallet addresses here - one per line, or CSV format with 'wallet_address' column. This is the easiest way to input wallets.",
+            "editor": "textarea",
+            "prefill": "0x742d35Cc6634C0532925a3b844Bc9e7595f2bD12\n0x8ba1f109551bD432803012645Ac136ddd64DBA72"
+        },
+        "walletAddresses": {
+            "title": "Wallet addresses (JSON)",
+            "type": "array",
+            "description": "Alternative: provide wallet addresses as a JSON array. Useful for programmatic API calls.",
+            "editor": "json"
+        },
+        "inputFile": {
+            "title": "Input file URL",
+            "type": "string",
+            "description": "Alternative: URL to a CSV, JSON, or text file containing wallet addresses. Best for large datasets (10k+ wallets).",
+            "editor": "textfield"
+        },
+        "batchLimit": {
+            "title": "Batch limit",
+            "type": "integer",
+            "description": "Maximum wallets to process per run. Set to 5000 for large datasets to avoid timeouts. Set to 0 for no limit.",
+            "editor": "number",
+            "default": 0,
+            "minimum": 0,
+            "sectionCaption": "Advanced options",
+            "sectionDescription": "Configure batch processing and checkpoint behavior for large datasets"
+        },
+        "resumeFromCheckpoint": {
+            "title": "Resume from checkpoint",
+            "type": "boolean",
+            "description": "Continue from where the last run stopped. Enable this for large datasets that span multiple runs.",
+            "default": true
+        },
+        "clearCheckpoint": {
+            "title": "Clear previous checkpoint",
+            "type": "boolean",
+            "description": "Start fresh by clearing any saved progress. Use this if you're starting a new dataset.",
+            "default": false
+        }
+    },
+    "required": []
+}
+

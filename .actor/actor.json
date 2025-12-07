@@ -1,0 +1,62 @@
+{
+    "actorSpecification": 1,
+    "name": "wallet-doxxer",
+    "title": "Wallet Doxxer",
+    "description": "Search Twitter/X for cryptocurrency wallet addresses and find their owners. Get Twitter handles and confidence scores for Ethereum, Solana, Bitcoin wallets. Export as CSV, JSON, Excel. Built for production scale with checkpoint/resume for 33k+ wallets.",
+    "version": "1.0.0",
+    "buildTag": "latest",
+    "meta": {
+        "templateId": "python-start"
+    },
+    "input": "./input_schema.json",
+    "dockerfile": "../Dockerfile",
+    "readme": "../README.md",
+    "minMemoryMbytes": 256,
+    "maxMemoryMbytes": 4096,
+    "categories": [
+        "SOCIAL_MEDIA",
+        "LEAD_GENERATION"
+    ],
+    "storages": {
+        "dataset": {
+            "actorSpecification": 1,
+            "title": "Wallet Search Results",
+            "description": "Twitter handles and confidence scores for searched wallet addresses",
+            "views": {
+                "results": {
+                    "title": "Search Results",
+                    "transformation": {
+                        "fields": [
+                            "wallet",
+                            "postExists",
+                            "twitterHandle",
+                            "confidence"
+                        ]
+                    },
+                    "display": {
+                        "component": "table",
+                        "properties": {
+                            "wallet": {
+                                "label": "Wallet Address",
+                                "format": "text"
+                            },
+                            "postExists": {
+                                "label": "Post Found",
+                                "format": "boolean"
+                            },
+                            "twitterHandle": {
+                                "label": "Twitter Handle",
+                                "format": "text"
+                            },
+                            "confidence": {
+                                "label": "Confidence",
+                                "format": "text"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
