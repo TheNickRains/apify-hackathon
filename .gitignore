@@ -5,9 +5,10 @@
 
 # Google credentials
 credentials.json
-*.json
-!railway.json
-!package.json
+
+# Apify actor config (allow .actor/*.json)
+!.actor/
+!.actor/*.json
 
 # Checkpoint files
 grok_checkpoint_*.txt
@@ -63,3 +64,8 @@ logs/
 tmp/
 temp/
 
+
+# Added by Apify CLI
+storage
+node_modules
+.venv

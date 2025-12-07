@@ -1,20 +1,17 @@
-# GROK Wallet Doxxer - Apify Actor
-# Uses Python 3.11 with Apify SDK
+# Wallet Doxxer - Apify Actor
+FROM apify/actor-python:3.13
 
-FROM apify/actor-python:3.11
-
-# Copy requirements first for better caching
-COPY requirements.txt ./
+# Copy requirements first for caching
+COPY --chown=myuser:myuser requirements.txt ./
 
 # Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install -r requirements.txt
 
 # Copy source code
-COPY . ./
+COPY --chown=myuser:myuser . ./
 
-# Set working directory to src for imports
-WORKDIR /usr/src/app/src
+# Verify Python code compiles
+RUN python3 -m compileall -q src/
 
-# Run the actor
-CMD ["python", "main.py"]
-
+# Run as module
+CMD ["python3", "-m", "src"]
