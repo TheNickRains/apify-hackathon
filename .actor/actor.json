@@ -3,7 +3,7 @@
     "name": "wallet-doxxer",
     "title": "Wallet Doxxer",
     "description": "Search Twitter/X for cryptocurrency wallet addresses and find their owners. Get Twitter handles and confidence scores for Ethereum, Solana, Bitcoin wallets. Export as CSV, JSON, Excel. Built for production scale with checkpoint/resume for 33k+ wallets.",
-    "version": "1.0.0",
+    "version": "0.1",
     "buildTag": "latest",
     "meta": {
         "templateId": "python-start"
